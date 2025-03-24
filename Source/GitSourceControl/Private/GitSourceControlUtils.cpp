@@ -1665,17 +1665,13 @@ FString GetFullPathFromGitStatus(const FString& Result, const FString& InReposit
 #if ENGINE_MAJOR_VERSION == 5
 bool UpdateChangelistStateByCommand()
 {
-	// TODO: This is a temporary solution.
-	FModuleManager &ModuleManager = FModuleManager::Get();
 	FName GitModuleName = "GitSourceControl";
-
-	if (!ModuleManager.IsModuleLoaded(GitModuleName))
+	if ( ! FModuleManager::Get().IsModuleLoaded(GitModuleName))
 	{
-		UE_LOG(LogSourceControl, Warning, TEXT("GitSourceControl module is not loaded."));
+		UE_LOG(LogSourceControl, Error, TEXT("%s module is not loaded."), *GitModuleName.ToString());
 		return false;
 	}
-	
-	FGitSourceControlModule& GitSourceControl = FModuleManager::GetModuleChecked<FGitSourceControlModule>("GitSourceControl");
+	FGitSourceControlModule& GitSourceControl = FModuleManager::GetModuleChecked<FGitSourceControlModule>(GitModuleName);
 	FGitSourceControlProvider& Provider = GitSourceControl.GetProvider();
 	if (!Provider.IsGitAvailable())
 	{
@@ -1767,7 +1763,13 @@ void UpdateFileStagingOnSaved(const FString& Filename, UPackage* Pkg, FObjectPos
 bool UpdateFileStagingOnSavedInternal(const FString& Filename)
 {
 	bool bResult = false;
-	FGitSourceControlModule& GitSourceControl = FModuleManager::GetModuleChecked<FGitSourceControlModule>("GitSourceControl");
+	FName GitModuleName = "GitSourceControl";
+	if ( ! FModuleManager::Get().IsModuleLoaded(GitModuleName))
+	{
+		UE_LOG(LogSourceControl, Error, TEXT("%s module is not loaded."), *GitModuleName.ToString());
+		return false;
+	}
+	FGitSourceControlModule& GitSourceControl = FModuleManager::GetModuleChecked<FGitSourceControlModule>(GitModuleName);
 	FGitSourceControlProvider& Provider = GitSourceControl.GetProvider();
 	if (!Provider.IsGitAvailable())
 	{
@@ -1790,7 +1792,13 @@ bool UpdateFileStagingOnSavedInternal(const FString& Filename)
 	
 void UpdateStateOnAssetRename(const FAssetData& InAssetData, const FString& InOldName)
 {
-	FGitSourceControlModule& GitSourceControl = FModuleManager::GetModuleChecked<FGitSourceControlModule>("GitSourceControl");
+	FName GitModuleName = "GitSourceControl";
+	if ( ! FModuleManager::Get().IsModuleLoaded(GitModuleName))
+	{
+		UE_LOG(LogSourceControl, Error, TEXT("%s module is not loaded."), *GitModuleName.ToString());
+		return false;
+	}
+	FGitSourceControlModule& GitSourceControl = FModuleManager::GetModuleChecked<FGitSourceControlModule>(GitModuleName);
 	FGitSourceControlProvider& Provider = GitSourceControl.GetProvider();
 	if (!Provider.IsGitAvailable())
 	{
