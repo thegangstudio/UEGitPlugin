@@ -79,7 +79,7 @@ namespace GitSourceControlUtils
  * Find the path to the Git binary, looking into a few places (standalone Git install, and other common tools embedding Git)
  * @returns the path to the Git binary if found, or an empty string.
  */
-FString FindGitBinaryPath();
+GITSOURCECONTROL_API FString FindGitBinaryPath();
 
 /**
  * Run a Git "version" command to check the availability of the binary.
@@ -140,7 +140,7 @@ bool GetBranchName(const FString& InPathToGitBinary, const FString& InRepository
  * Get Git remote tracking branch
  * @returns false if the branch is not tracking a remote
  */
-bool GetRemoteBranchName(const FString& InPathToGitBinary, const FString& InRepositoryRoot, FString& OutBranchName);
+GITSOURCECONTROL_API bool GetRemoteBranchName(const FString& InPathToGitBinary, const FString& InRepositoryRoot, FString& OutBranchName);
 
  /**
  * Get Git remote tracking branches that match wildcard
